@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sofia's Gothic-Themed Hangman</title>
+    <style>
+        body {
+            font-family: 'Garamond', serif;
+            background-color: #1a1a1a;
+            color: #ddd;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        h1 {
+            font-family: 'Castellar', sans-serif;
+            font-size: 36px;
+            color: #ff6666;
+            margin-bottom: 30px;
+        }
+
+        #word {
+            font-size: 25px;
+            margin-bottom: 20px;
+        }
+
+        #guesses {
+            margin-top: 20px;
+        }
+
+        #remaining-guesses {
+            color: #ff6666;
+            font-weight: bold;
+        }
+
+        button {
+            background-color: #ff6666;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 25px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #ff4d4d;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Sofia's Gothic-Themed Hangman</h1>
+    <div id="word"></div>
+    <div id="guesses">Remaining guesses: <span id="remaining-guesses"></span></div>
+    <script>
+        // List of words
+        const words = ['vampire', 'blood', 'fangs', 'night', 'cemetery', 'bat', 'moon', 'darkness', 'haunted', 'coffin', 'night', 'gothic'];
+
+        // Choose a random word
+        let chosenWord = words[Math.floor(Math.random() * words.length)];
+
+        // Initialize array to store guessed letters
+        let guessedLetters = new Array(chosenWord.length).fill('_');
+        // Reveal the first letter of the chosen word
+        guessedLetters[0] = chosenWord[0];
+
+        // Display the word with underscores for unguessed letters
+        document.getElementById('word').textContent = guessedLetters.join(' ');
+
+        // Display guessed letters
+        let guessesElement = document.getElementById('remaining-guesses');
+        let remainingGuesses = 6; // Change this to set the number of allowed guesses
+        guessesElement.textContent = remainingGuesses;
+
+        // Function to check if the guessed letter is correct
+        function guessLetter(letter) {
+            let indices = [];
+            for (let i = 0; i < chosenWord.length; i++) {
+                if (chosenWord[i] === letter) {
+                    indices.push(i);
+                }
+            }
+            if (indices.length === 0) {
+                remainingGuesses--;
+                guessesElement.textContent = remainingGuesses;
+                if (remainingGuesses === 0) {
+                    alert('Game Over! The word was: ' + chosenWord);
+                    resetGame();
+                }
+                return false;
+            } else {
+                indices.forEach(index => {
+                    guessedLetters[index] = letter;
+                });
+                document.getElementById('word').textContent = guessedLetters.join(' ');
+                if (!guessedLetters.includes('_')) {
+                    alert('Congratulations! You have guessed the word: ' + chosenWord);
+                    resetGame();
+                }
+                return true;
+            }
+        }
+
+        // Event listener for key press
+        document.addEventListener('keypress', function (event) {
+            let letter = String.fromCharCode(event.keyCode).toLowerCase();
+            if (/[a-z]/.test(letter)) {
+                if (guessedLetters.includes(letter)) {
+                    alert('You have already guessed this letter.');
+                } else {
+                    if (!guessLetter(letter)) {
+                        // Add guessed letter to display
+                    }
+                }
+            }
+        });
+
+        // Function to reset the game
+        function resetGame() {
+            chosenWord = words[Math.floor(Math.random() * words.length)];
+            guessedLetters = new Array(chosenWord.length).fill('_');
+            // Reveal the first letter of the new chosen word
+            guessedLetters[0] = chosenWord[0];
+            document.getElementById('word').textContent = guessedLetters.join(' ');
+            remainingGuesses = 6; // Reset the number of allowed guesses
+            guessesElement.textContent = remainingGuesses;
+        }
+    </script>
+</body>
+
+</html>
